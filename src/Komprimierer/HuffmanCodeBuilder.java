@@ -1,7 +1,5 @@
-package de.unistuttgart.iste.sqa.pse.sheet12.presence.hamsterclub;
+package Komprimierer;
 
-
-import javafx.util.Pair;
 
 import java.util.*;
 
@@ -22,7 +20,7 @@ public class HuffmanCodeBuilder {
         this(text, createAlphabet(text), base);
     }
 
-    /*public HuffmanCodeBuilder(String text, int weightedAlphabet){
+    /*public Komprimierer.HuffmanCodeBuilder(String text, int weightedAlphabet){
         //TODO
     }*/
 

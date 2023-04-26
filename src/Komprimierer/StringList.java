@@ -1,4 +1,4 @@
-package de.unistuttgart.iste.sqa.pse.sheet12.presence.hamsterclub;
+package Komprimierer;
 
 import java.util.LinkedList;
 
