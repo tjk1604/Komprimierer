@@ -1,5 +1,9 @@
-package Komprimierer;
+package Komprimierer.main;
 
+
+import Komprimierer.utils.datenstrukturen.IntList;
+import Komprimierer.utils.datenstrukturen.Pair;
+import Komprimierer.utils.datenstrukturen.StringList;
 
 import java.util.*;
 
@@ -8,7 +12,7 @@ public class HuffmanCodeBuilder {
     private StringList tree;
     private final String text;
     private final int base;
-    //private final HuffmanCode huffmancode;
+    private final HuffmanCode huffmancode;
     //private final LinkedList<Integer> cypherAsList;
 
 
@@ -20,7 +24,7 @@ public class HuffmanCodeBuilder {
         this(text, createAlphabet(text), base);
     }
 
-    /*public Komprimierer.HuffmanCodeBuilder(String text, int weightedAlphabet){
+    /*public HuffmanCodeBuilder(String text, int weightedAlphabet){
         //TODO
     }*/
 
@@ -38,7 +42,7 @@ public class HuffmanCodeBuilder {
         while(this.tree.size()==1){
             this.tree=this.tree.pollFirst();
         }
-
+        this.huffmancode=new BijectiveHuffmanCode(this.tree);
         printCode(this.tree, "");
     }
 
@@ -144,4 +148,21 @@ public class HuffmanCodeBuilder {
             }
         }
     }
+
+    public HashMap<String, Integer> getAlphabet() {
+        return new HashMap<>(alphabet);
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public int getBase() {
+        return base;
+    }
+
+    public HuffmanCode getCode(){
+        return this.huffmancode;
+    }
+
 }

@@ -1,4 +1,4 @@
-package Komprimierer;
+package Komprimierer.utils.datenstrukturen;
 
 public class Pair<T extends Object, G extends Object> {
     private T key;

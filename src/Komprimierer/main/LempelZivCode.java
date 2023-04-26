@@ -1,4 +1,4 @@
-package Komprimierer;
+package Komprimierer.main;
 
 import java.util.ArrayList;
 

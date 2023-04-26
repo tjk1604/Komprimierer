@@ -1,4 +1,4 @@
-package Komprimierer;
+package Komprimierer.utils.datenstrukturen;
 
 import java.util.LinkedList;
 

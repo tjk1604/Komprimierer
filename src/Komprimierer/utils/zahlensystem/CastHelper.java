@@ -1,4 +1,4 @@
-package Komprimierer;
+package Komprimierer.utils.zahlensystem;
 
 import java.util.LinkedList;
 
