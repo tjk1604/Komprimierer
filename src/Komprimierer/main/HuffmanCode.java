@@ -8,7 +8,7 @@ public class HuffmanCode extends HashMap<String, String> implements Code{
     protected int biggestValueLength;
     protected int biggestCodeLength;
     public HuffmanCode(final String text){
-        new HuffmanCodeBuilder(text).getCode();
+        this.putAll(new HuffmanCodeBuilder(text).getCode());
         findLongestEntries();
     }
 

@@ -9,11 +9,15 @@ public class CompressedText{
     private String cypher;
 
     public CompressedText(final String cypher, final Code code){
-        this.code=Optional.of(code.createCopy());
+        this.code=code.createCopy();
         this.cypher=cypher.substring(1);
     }
 
     public static CompressedText fromString(String compressedTextAsString){
+        return null;
+    }
+
+    public static CompressedText fromText(String text, CodeType codeType){
         return null;
     }
 
@@ -34,8 +38,8 @@ public class CompressedText{
         return null;
     }
 
-    public Optional<Code> getCode() {
-        return code;
+    public Code getCode() {
+        return code.createCopy();
     }
 
     public String getCypher() {
