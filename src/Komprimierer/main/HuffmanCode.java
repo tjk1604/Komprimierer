@@ -1,20 +1,33 @@
 package Komprimierer.main;
 
 import Komprimierer.utils.datenstrukturen.StringList;
+import Komprimierer.utils.zahlensystem.CustomSystem;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class HuffmanCode extends HashMap<String, String> implements Code{
     protected int biggestValueLength;
     protected int biggestCodeLength;
+
+    private final int base;
     public HuffmanCode(final String text){
-        this.putAll(new HuffmanCodeBuilder(text).getCode());
+        this.base=2;
+        this.putAll(new HuffmanCodeBuilder(text,2).getCode());
+        findLongestEntries();
+    }
+
+    public HuffmanCode(final String text, final int base){
+        this.base=base;
+        this.putAll(new HuffmanCodeBuilder(text, base).getCode());
         findLongestEntries();
     }
 
     public HuffmanCode(StringList tree){
-        createCode(tree, "");
+        createCode(tree, new LinkedList<Integer>());
         findLongestEntries();
+        this.base=tree.size();
+
     }
 
     public HuffmanCode(HuffmanCode huffmanCode){
@@ -22,15 +35,19 @@ public class HuffmanCode extends HashMap<String, String> implements Code{
             put(entry, huffmanCode.get(entry));
         }
         findLongestEntries();
+        this.base= huffmanCode.getBase();
     }
 
-    private void createCode(StringList list, String praefix){
+    private void createCode(StringList list, LinkedList<Integer> praefix){
         if(list.size()>1){
             for(int i=list.size()-1; i>=0; i--){
-                createCode(list.get(i), praefix+i);
+                LinkedList<Integer> nextPraefix=new LinkedList<>(praefix);
+                nextPraefix.add(0, i);
+                createCode(list.get(i), nextPraefix);
             }
         }else{
-            put(praefix, list.toString());
+
+            put(CustomSystem.intListToString(praefix, true), list.toString());
         }
     }
 
@@ -47,8 +64,25 @@ public class HuffmanCode extends HashMap<String, String> implements Code{
     }
 
 
+    private int getBase(){
+        return this.base;
+    }
     @Override
     public Code createCopy() {
         return new HuffmanCode(this);
+    }
+
+    public String toString(){
+        StringBuilder str=new StringBuilder();
+        str.append("[");
+        for(String key:this.keySet()){
+            str.append("(");
+            str.append(this.get(key));
+            str.append("|");
+            str.append(key);
+            str.append(")");
+        }
+        str.append("]");
+        return str.toString();
     }
 }

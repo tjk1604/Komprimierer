@@ -28,4 +28,20 @@ public class BijectiveHuffmanCode extends HuffmanCode{
             this.codesMappedToStrings.put(get(str), str);
         }
     }
+
+    public String enCypher(String text){
+        return null;
+    }
+
+    public String deCypher(String cypher){
+        return null;
+    }
+
+    private String deCode(String code){
+        return null;
+    }
+
+    private String encode(String letter){
+        return null;
+    }
 }

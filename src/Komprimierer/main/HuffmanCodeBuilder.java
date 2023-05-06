@@ -34,7 +34,7 @@ public class HuffmanCodeBuilder {
     }
 
     public HuffmanCodeBuilder(final String text, final HashMap<String, Integer> alphabet, final int base){
-        assert(1<base&&base<65);
+        assert(1<base&&base<65);//TODO, aktivieren
         this.alphabet=new HashMap<>(alphabet);
         this.text=text;
         this.base=base;

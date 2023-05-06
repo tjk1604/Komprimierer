@@ -1,5 +1,7 @@
 package Komprimierer.utils.zahlensystem;
 
+import java.util.LinkedList;
+
 public abstract class CustomSystem{
     public static char[] alphabet=new char[]{'0','1','2','3','4','5','6','7','8','9',
             'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
@@ -51,7 +53,7 @@ public abstract class CustomSystem{
                 return i;
             }
         }
-        throw new IllegalArgumentException("char not in Komprimierer.utils.zahlensystem.CustomSystem");
+        throw new IllegalArgumentException("char not in CustomSystem");
     }
 
     public static String toReverseBaseString(int number, int base, int power){
@@ -64,52 +66,155 @@ public abstract class CustomSystem{
         return result.toString();
     }
 
-    public static String convertSystem(final int source, final int target, String text){
-        int validtest=2;
-        int sourcepower=1;
-        while(validtest!=source&&validtest<=32768){
-            validtest=validtest*2;
-            sourcepower++;
-        }
-        if(validtest!=source){
-            throw new IllegalArgumentException();
-        }
-        validtest=2;
-        int targetpower=1;
-        while(validtest!=target&&validtest<=32768){
-            validtest=validtest*2;
-            targetpower++;
-        }
-        if(validtest!=target){
-            throw new IllegalArgumentException();
+    public static String convertSystem(int targetPower, String original){
+        assert(targetPower>0);
+        assert(testSystemValidity(original.charAt(1), original.charAt(0)));
+        assert(original.length()>2);
+        int base;
+        int sourcePower;
+        LinkedList<Integer> originalList=new LinkedList<>();
+        CastHelper<Integer, Character> castHelper;
+        if(CustomSystem.useCustomSystem(original.charAt(0))){
+            castHelper= (list, ch)->list.add(0, CustomSystem.cast(ch));
+            base=CustomSystem.cast(original.charAt(1))+1;
+            sourcePower=determineSourcePower(CustomSystem.cast(original.charAt(1)), CustomSystem.cast(original.charAt(0)));
+        }else{
+            base=(int) original.charAt(1)+1;
+            castHelper= (list, ch)->list.add(0, (int) ch.charValue());
+            sourcePower=determineSourcePower((int) original.charAt(1), (int) original.charAt(0));
         }
 
-        StringBuilder converted=new StringBuilder();
-        if(targetpower<sourcepower){
-            int finalTargetpower = targetpower;
-            int finalSourcepower = sourcepower;
-            text.chars().forEach(cha->converted.append(convertChar(finalSourcepower, finalTargetpower,(char)cha)));
-            return converted.toString();
-        }else{
-            return text;
+
+        assert(base<65);
+        if(sourcePower==targetPower){
+            return original;
+        }else {
+            StringBuilder result=new StringBuilder();
+            result.append(createPraefix(base, targetPower));
+            original = original.substring(2);
+            original.chars().forEach(ch -> castHelper.cast(originalList, Character.valueOf((char) ch)));
+            System.out.println(originalList);
+
+            LinkedList<Integer> targetList=convertSystemInList(originalList, base, sourcePower, targetPower);
+            result.append(intListToString(targetList, CustomSystem.useCustomSystem(base, targetPower)));
+            return result.toString();
         }
+    }
+
+
+    private static LinkedList<Integer> convertSystemInList(LinkedList<Integer> originalList, final int base, final int sourcePower, final int targetPower){
+        LinkedList<Integer> targetList=new LinkedList<>();
+        final int bufferSize=sourcePower*targetPower;
+        StringBuilder buffer= new StringBuilder();
+        while(originalList.size()>=targetPower) {
+            for (int i = 0; i < bufferSize; i=i  + sourcePower) {
+                buffer.append(CustomSystem.toReverseBaseString(originalList.get(0), base, sourcePower));
+                originalList.remove(0);
+            }
+            for(int i=0; i<bufferSize; i=i+targetPower){
+                int current=0;
+                for(int j=0; j<targetPower; j++){
+                    int sum=CustomSystem.cast(buffer.charAt(0));
+                    for(int k=0; k<j; k++) {
+                        sum =  base * sum;
+                    }
+                    current=current+sum;
+                    buffer.deleteCharAt(0);
+                }
+                targetList.add(current);
+            }
+        }
+        if(originalList.size()!=0){
+            do{
+                originalList.add(0);
+            }while(originalList.size()<targetPower);
+            targetList.addAll(convertSystemInList(originalList, base, sourcePower, targetPower));
+        }
+
+        while(targetList.getLast()==0){
+            targetList.removeLast();
+        }
+        System.out.println(targetList);
+        return targetList;
 
     }
 
-    private static String convertChar(int source, int target, char ch){
-        StringBuilder storage=new StringBuilder(ch);
+    public static String intListToString(LinkedList<Integer> list, final boolean useCustomSystem){
         StringBuilder result=new StringBuilder();
-        while(source<target){
-            int finalSource = source;
-            storage.chars().forEach(cha->{
-                result.append((char)cha/(finalSource -1));
-                result.append((char)cha-((cha/ finalSource -1)*(finalSource -1)));
-            });
-            source=source+1;
-            storage.setLength(0);
-            storage.append(result);
-            result.setLength(0);
+        CastHelper<Integer, StringBuilder> casthelper;
+        System.out.println(list);
+        if(useCustomSystem){
+            casthelper=(liste, stringBuilder)->liste.forEach(number->stringBuilder.insert(0, CustomSystem.cast(number)));
+        }else{
+            casthelper=(liste, stringBuilder)->liste.forEach(number->stringBuilder.insert(0, (char)(int)number));
         }
+        casthelper.cast(list, result);
+        System.out.println(list);
         return result.toString();
+    }
+
+
+    private static int determineSourcePower(int base, int max){
+        base=base+1;
+        max=max+1;
+        int power=1;
+        while(max>base){
+            max=max/base;
+            power=power+1;
+        }
+        if(max!=base){
+            throw new IllegalArgumentException("IllegalSystem");
+        }
+        return power;
+    }
+
+    private static boolean testSystemValidity(final char base, final char max){
+        int baseint;
+        int maxint;
+        if(CustomSystem.useCustomSystem(max)){
+            baseint=CustomSystem.cast(base)+1;
+            maxint=CustomSystem.cast(max)+1;
+        }else{
+            baseint=(int) base+1;
+            maxint=(int) max+1;
+        }
+        while(maxint>baseint){
+            if(maxint%baseint!=0){
+                return false;
+            }
+            maxint=maxint/baseint;
+        }
+        return maxint==baseint;
+    }
+
+    private static boolean testPowerInBounds(final int base, final int power){
+        int x=base;
+        for(int i=1; i<power;i++){
+            x=x*base;
+            if(x>65536){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String createPraefix(final int base, final int power){
+        StringBuilder praefix=new StringBuilder();
+        int x=base;
+        for(int i=1; i<power;i++){
+            x=x*base;
+            if(x>65536){
+                throw new IllegalArgumentException("TargetPower too high");
+            }
+        }
+        System.out.println((char)x-1);
+        if(x>64){
+            praefix.append((char) (x-1));
+            praefix.append((char) (base-1));
+        }else{
+            praefix.append(CustomSystem.cast(x-1));
+            praefix.append(CustomSystem.cast(base-1));
+        }
+        return praefix.toString();
     }
 }
