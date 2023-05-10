@@ -34,15 +34,15 @@ public class HuffmanCodeBuilder {
     }
 
     public HuffmanCodeBuilder(final String text, final HashMap<String, Integer> alphabet, final int base){
-        assert(1<base&&base<65);//TODO, aktivieren
+        assert(1<base&&base<65);//TODO, aktivieren, untescheidung bijek u wheighted
         this.alphabet=new HashMap<>(alphabet);
-        this.text=text;
         this.base=base;
         this.tree=createTree();
         while(this.tree.size()==1){
             this.tree=this.tree.pollFirst();
         }
         this.huffmancode=new BijectiveHuffmanCode(this.tree);
+        this.text=text;
         printCode(this.tree, "");
     }
 

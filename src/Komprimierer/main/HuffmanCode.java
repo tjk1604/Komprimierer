@@ -3,6 +3,7 @@ package Komprimierer.main;
 import Komprimierer.utils.datenstrukturen.StringList;
 import Komprimierer.utils.zahlensystem.CustomSystem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -10,7 +11,7 @@ public class HuffmanCode extends HashMap<String, String> implements Code{
     protected int biggestValueLength;
     protected int biggestCodeLength;
 
-    private final int base;
+    final int base;
     public HuffmanCode(final String text){
         this.base=2;
         this.putAll(new HuffmanCodeBuilder(text,2).getCode());
@@ -84,5 +85,29 @@ public class HuffmanCode extends HashMap<String, String> implements Code{
         }
         str.append("]");
         return str.toString();
+    }
+
+    public String enCypher(String text){
+        return null;
+    }
+
+    public String enCypher(String text, int power){
+        return null;
+    }
+
+    public String deCypher(String cypher){
+        return null;
+    }
+
+    public String deCypher(String cypher, int power){
+        return null;
+    }
+
+    private String deCode(String code){
+        return null;
+    }
+
+    private String encode(String letter){
+        return null;
     }
 }
