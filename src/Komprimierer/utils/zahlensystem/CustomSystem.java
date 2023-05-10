@@ -187,7 +187,7 @@ public abstract class CustomSystem{
         return maxint==baseint;
     }
 
-    private static boolean testPowerInBounds(final int base, final int power){
+    public static boolean testPowerInBounds(final int base, final int power){
         int x=base;
         for(int i=1; i<power;i++){
             x=x*base;
