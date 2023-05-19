@@ -43,17 +43,6 @@ public class HuffmanCodeBuilder {
         }
         this.huffmancode=new BijectiveHuffmanCode(this.tree);
         this.text=text;
-        printCode(this.tree, "");
-    }
-
-    private void printCode(StringList list, String praefix){
-        if(list.size()>1){
-            for(int i=list.size()-1; i>=0; i--){
-                printCode(list.get(i), praefix+ "|"+i);
-            }
-        }else{
-            System.out.println(list.toString()+":"+this.alphabet.get(list.toString())+":"+praefix);
-        }
     }
 
     private static HashMap<String, Integer> createAlphabet(String text){

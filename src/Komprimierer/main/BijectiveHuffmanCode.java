@@ -64,7 +64,6 @@ public class BijectiveHuffmanCode extends HuffmanCode{
                 for (int i = 1; i <= biggestValueLength; i++) {
                     if(this.codesMappedToStrings.containsKey(text.substring(textlength-i))){
                         tempresult.insert(0, this.codesMappedToStrings.get(text.substring(textlength-i)));
-                        System.out.println("nextCode:"+this.codesMappedToStrings.get(text.substring(textlength-i)));
                         tempresultlength=tempresult.length();
                         text=text.substring(0, textlength-i);
                         textlength=textlength-i;
@@ -81,16 +80,12 @@ public class BijectiveHuffmanCode extends HuffmanCode{
                     }
                 }
             }
-            System.out.println("tempresult:"+tempresult+"|"+tempresultlength);
-            System.out.println("result:"+result);
             int nextChar=CustomSystem.cast(tempresult.charAt(tempresultlength-1));
             for(int i=1; i<power; i++){
                 int nextDigit=CustomSystem.cast(tempresult.charAt(tempresultlength-i-1));
-                System.out.println(nextDigit);
                 for(int j=0; j<i; j++){
                     nextDigit=nextDigit*base;
                 }
-                System.out.println(nextDigit);
                 nextChar=nextChar+nextDigit;
             }
             if(useCustomSystem){
@@ -116,6 +111,66 @@ public class BijectiveHuffmanCode extends HuffmanCode{
                     cypher=cypher.substring(i);
                     i=biggestCodeLength+1;
                     deCypherPossible=true;
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    public String deCypher(String cypher, int power) {
+        StringBuilder result=new StringBuilder();
+        StringBuilder cache=new StringBuilder();
+        boolean useCustomSystem=CustomSystem.useCustomSystem(this.base, power);
+        int nextChar;
+        if(useCustomSystem){
+            nextChar=CustomSystem.cast(cypher.charAt(0));
+        }else{
+            nextChar=(int)cypher.charAt(0);
+        }
+        int maxStelle=1;
+        for(int i=1; i<power; i++){
+            maxStelle=maxStelle*this.base;
+        }
+        int kawieichdasnennensollteiltisthaltderStellenwert=maxStelle;
+        for(int i=0; i<power; i++){
+            if(nextChar>=kawieichdasnennensollteiltisthaltderStellenwert){
+                cache.append("1");
+                nextChar=nextChar-kawieichdasnennensollteiltisthaltderStellenwert;
+            }else{
+                cache.append("0");
+            }
+            kawieichdasnennensollteiltisthaltderStellenwert=kawieichdasnennensollteiltisthaltderStellenwert/this.base;
+        }
+        cache.delete(0, cache.indexOf("1")+1);
+        int cypherlength=cypher.length();
+        for(int j=1; j<cypherlength;j++){
+            if(useCustomSystem){
+                nextChar=CustomSystem.cast(cypher.charAt(j));
+            }else{
+                nextChar=(int)cypher.charAt(j);
+            }
+            kawieichdasnennensollteiltisthaltderStellenwert=maxStelle;
+            for(int i=0; i<power; i++){
+                if(nextChar>=kawieichdasnennensollteiltisthaltderStellenwert){
+                    cache.append("1");
+                    nextChar=nextChar-kawieichdasnennensollteiltisthaltderStellenwert;
+                }else{
+                    cache.append("0");
+                }
+                kawieichdasnennensollteiltisthaltderStellenwert=kawieichdasnennensollteiltisthaltderStellenwert/this.base;
+            }
+            while(cache.length()>=biggestCodeLength){
+                boolean deCypherPossible=false;
+                for (int i = 1; i <= biggestCodeLength; i++) {
+                    if(this.containsKey(cache.substring(0,i))){
+                        result.append(this.get(cache.substring(0,i)));
+                        cache=cache.delete(0, i);
+                        i=biggestCodeLength+1;
+                        deCypherPossible=true;
+                    }
+                }
+                if(!deCypherPossible){
+                    throw new IllegalArgumentException("DecypherNotPossible");
                 }
             }
         }
